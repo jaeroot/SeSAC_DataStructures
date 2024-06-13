@@ -3,9 +3,12 @@
 #include "Array.h"
 #include "Stack.h"
 #include "Queue.h"
+#include "BinaryTree.h"
+#include <map>
 
 int main()
 {
+	//**************************************************************************
 	// List
 	CLinkedList<int> ListInt;
 
@@ -45,7 +48,8 @@ int main()
 	std::cout << std::endl;
 	std::cout << std::endl;
 
-	
+
+	//**************************************************************************
 	// Array
 	CArray<int> IntArray;
 
@@ -62,6 +66,7 @@ int main()
 	std::cout << std::endl;
 
 
+	//**************************************************************************
 	// Stack
 	CStack<int> IntStack;
 
@@ -82,6 +87,7 @@ int main()
 	std::cout << std::endl;
 
 
+	//**************************************************************************
 	// Queue
 	CQueue<int> IntQueue;
 
@@ -101,6 +107,44 @@ int main()
 	std::cout << std::endl;
 	std::cout << std::endl;
 
+
+
+	//**************************************************************************
+	// Binary Tree
+
+	CBinaryTree<int, int> IntTree;
+
+	IntTree.Insert(10, 10);
+	IntTree.Insert(5, 5);
+	IntTree.Insert(15, 15);
+	IntTree.Insert(3, 3);
+	IntTree.Insert(8, 8);
+	IntTree.Insert(13, 13);
+	IntTree.Insert(1, 1);
+	IntTree.Insert(4, 4);
+	IntTree.Insert(9, 9);
+	IntTree.Insert(30, 30);
+	IntTree.Insert(20, 20);
+	IntTree.Insert(40, 40);
+
+	auto Treeiter = IntTree.Begin();
+	auto TreeiterEnd = IntTree.End();
+
+	for (; Treeiter != TreeiterEnd ; ++Treeiter)
+	{
+		std::cout << "Key : " << Treeiter->mKey << ", Value : " << Treeiter->mValue << std::endl;
+	}
+
+	std::cout << "Find 5 : " << IntTree.Find(5)->mValue << std::endl;
+	std::cout << "Find 10 : " << IntTree.Find_Iteration(10)->mValue << std::endl;
+	
+	
+	std::cout << "Delete 5 : " << IntTree.erase(5)->mValue << std::endl;
+
+	for (Treeiter = IntTree.Begin(); Treeiter != TreeiterEnd; ++Treeiter)
+	{
+		std::cout << "Key : " << Treeiter->mKey << ", Value : " << Treeiter->mValue << std::endl;
+	}
 
 	return 0;
 }

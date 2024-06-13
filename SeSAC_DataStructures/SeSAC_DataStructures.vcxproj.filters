@@ -32,5 +32,8 @@
     <ClInclude Include="Queue.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="BinaryTree.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
