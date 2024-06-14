@@ -1,21 +1,24 @@
 #pragma once
+#include <algorithm>
+#include <iostream>
+//#include <stdlib.h>
 
 template <typename KEY, typename VALUE>
-class CBinaryTreeNode
+class CAVLTreeNode
 {
 	template <typename KEY, typename VALUE>
-	friend class CBinaryTree;
+	friend class CAVLTree;
 
 	template <typename KEY, typename VALUE>
-	friend class CBinaryTreeIterator;
+	friend class CAVLTreeIterator;
 
 private:
-	CBinaryTreeNode()
+	CAVLTreeNode()
 	{
 
 	}
 
-	~CBinaryTreeNode()
+	~CAVLTreeNode()
 	{
 
 	}
@@ -25,46 +28,46 @@ public:
 	VALUE mValue;
 
 private:
-	CBinaryTreeNode<KEY, VALUE>* mParent = nullptr;
+	CAVLTreeNode<KEY, VALUE>* mParent = nullptr;
 
-	CBinaryTreeNode<KEY, VALUE>* mLeft = nullptr;
-	CBinaryTreeNode<KEY, VALUE>* mRight = nullptr;
+	CAVLTreeNode<KEY, VALUE>* mLeft = nullptr;
+	CAVLTreeNode<KEY, VALUE>* mRight = nullptr;
 
-	CBinaryTreeNode<KEY, VALUE>* mPrev = nullptr;
-	CBinaryTreeNode<KEY, VALUE>* mNext = nullptr;
+	CAVLTreeNode<KEY, VALUE>* mPrev = nullptr;
+	CAVLTreeNode<KEY, VALUE>* mNext = nullptr;
 };
 
 template <typename KEY, typename VALUE>
-class CBinaryTreeIterator
+class CAVLTreeIterator
 {
 	template <typename KEY, typename VALUE>
-	friend class CBinaryTree;
+	friend class CAVLTree;
 
 public:
-	CBinaryTreeIterator()
+	CAVLTreeIterator()
 	{
 
 	}
 
-	~CBinaryTreeIterator()
+	~CAVLTreeIterator()
 	{
 
 	}
 
 private:
-	CBinaryTreeNode<KEY, VALUE>* mNode = nullptr;
+	CAVLTreeNode<KEY, VALUE>* mNode = nullptr;
 
 public:
-	bool operator==(const CBinaryTreeIterator<KEY, VALUE>& iter) const
+	bool operator==(const CAVLTreeIterator<KEY, VALUE>& iter) const
 	{
 		return mNode == iter.mNode;
 	}
 
-	bool operator!=(const CBinaryTreeIterator<KEY, VALUE>& iter) const
+	bool operator!=(const CAVLTreeIterator<KEY, VALUE>& iter) const
 	{
 		return mNode != iter.mNode;
 	}
-	
+
 	void operator++()
 	{
 		mNode = mNode->mNext;
@@ -84,17 +87,17 @@ public:
 	}
 
 	// iter->를 하게 되면 mNode->를 한 것과 같음
-	CBinaryTreeNode<KEY, VALUE>* operator->()
+	CAVLTreeNode<KEY, VALUE>* operator->()
 	{
 		return mNode;
 	}
 };
 
 template <typename KEY, typename VALUE>
-class CBinaryTree
+class CAVLTree
 {
 public:
-	CBinaryTree()
+	CAVLTree()
 	{
 		mBegin = new Node;
 		mEnd = new Node;
@@ -103,7 +106,7 @@ public:
 		mEnd->mPrev = mBegin;
 	}
 
-	~CBinaryTree()
+	~CAVLTree()
 	{
 		Node* DeleteNode = mBegin;
 
@@ -116,16 +119,58 @@ public:
 	}
 
 private:
-	using Node = CBinaryTreeNode<KEY, VALUE>;
+	using Node = CAVLTreeNode<KEY, VALUE>;
 
 public:
-	using iterator = CBinaryTreeIterator<KEY, VALUE>;
+	using iterator = CAVLTreeIterator<KEY, VALUE>;
 
 private:
 	Node* mRoot = nullptr;
 	Node* mBegin = nullptr;
 	Node* mEnd = nullptr;
 	int mSize = 0;
+
+public:
+	// 모든 노드의 데이터, 왼쪽, 오른쪽, 부모의 데이터를 출력하는 테스트용 함수
+	void OutputTree()
+	{
+		iterator iter = Begin();
+		iterator iterEnd = End();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			std::cout << "Key : " << iter.mNode->mKey;
+			std::cout << "\tData : " << iter.mNode->mValue;
+			std::cout << "\tLeft : ";
+			if (iter.mNode->mLeft)
+			{
+				std::cout << iter.mNode->mLeft->mValue;
+			}
+			else
+			{
+				std::cout << "없음";
+			}
+			std::cout << "\tRight : ";
+			if (iter.mNode->mRight)
+			{
+				std::cout << iter.mNode->mRight->mValue;
+			}
+			else
+			{
+				std::cout << "없음";
+			}
+			std::cout << "\tParent : ";
+			if (iter.mNode->mParent)
+			{
+				std::cout << iter.mNode->mParent->mValue;
+			}
+			else
+			{
+				std::cout << "없음";
+			}
+			std::cout << std::endl;
+		}
+	}
 
 public:
 	void Insert(const KEY& Key, const VALUE& Value)
@@ -362,6 +407,8 @@ public:
 			Prev->mNext = Next;
 			Next->mPrev = Prev;
 
+			ReBalance(iter.mNode->mParent);
+
 			delete iter.mNode;
 			--mSize;
 
@@ -409,6 +456,8 @@ public:
 			Prev->mNext = Next;
 			Next->mPrev = Prev;
 
+			ReBalance(DeleteNode->mParent);
+
 			delete DeleteNode;
 			--mSize;
 
@@ -455,6 +504,8 @@ public:
 
 			Prev->mNext = Next;
 			Next->mPrev = Prev;
+
+			ReBalance(DeleteNode->mParent);
 
 			delete DeleteNode;
 			--mSize;
@@ -510,6 +561,10 @@ private:
 
 				++mSize;
 
+				// 새로 추가된 노드는 균형이 무너질 가능성이 없음
+				// 그러므로 새로 추가된 노드부터 균형이 무너질 가능성이 있는 것은 부모노드의 부모노드임
+				ReBalance(CurrentNode->mParent);
+
 				return;
 			}
 			else	// 왼쪽에 노드가 있을 경우 왼쪽 노드를 CurrentNode로 넣어주면서 검사 다시 시작
@@ -540,6 +595,10 @@ private:
 				Next->mPrev = NewNode;
 
 				++mSize;
+				
+				// 새로 추가된 노드는 균형이 무너질 가능성이 없음
+				// 그러므로 새로 추가된 노드부터 균형이 무너질 가능성이 있는 것은 부모노드의 부모노드임
+				ReBalance(CurrentNode->mParent);
 
 				return;
 			}
@@ -567,7 +626,7 @@ private:
 		{
 			return Find(Key, CurrentNode->mLeft);
 		}
-		
+
 		return Find(Key, CurrentNode->mRight);
 	}
 
@@ -589,5 +648,189 @@ private:
 		}
 
 		return CurrentNode;
+	}
+
+	Node* RotationLeft(Node* CurrentNode)
+	{
+		// 현재 노드의 오른쪽 자식 노드를 얻어옴
+		Node* RChild = CurrentNode->mRight;
+
+		// 위에서 얻어온 오른쪽 자식노드의 왼쪽 자식 노드를 얻어옴
+		Node* RLChild = RChild->mLeft;
+
+		// 현재 노드의 부모노드를 얻어옴
+		Node* Parent = CurrentNode->mParent;
+
+		//부모 노드가 있을 경우
+		if (Parent)
+		{
+			// 현재 노드가 부모노드의 왼쪽인지 오른쪽인지 판단
+			if (Parent->mLeft == CurrentNode)
+			{
+				Parent->mLeft =  RChild;
+			}
+			else
+			{
+				Parent->mRight = RChild;
+			}
+
+			RChild->mParent = Parent;
+		}
+		// 부모 노드가 없을 경우
+		else
+		{
+			mRoot = RChild;
+			RChild->mParent = nullptr;
+		}
+
+		// CurrentNode와 RightChild Swap
+		RChild->mLeft = CurrentNode;
+		CurrentNode->mParent = RChild;
+
+		// RLChild를 CurrentNode의 mRight로 Swap
+		CurrentNode->mRight = RLChild;
+		if (RLChild)
+		{
+			RLChild->mParent = CurrentNode;
+		}
+
+		return RChild;
+	}
+
+	Node* RotationRight(Node* CurrentNode)
+	{
+		// 현재 노드의 왼쪽 자식 노드를 얻어옴
+		Node* LChild = CurrentNode->mLeft;
+		
+		// 위에서 얻어온 왼쪽 자식노드의 오른쪽 자식 노드를 얻어옴
+		Node* LRChild = LChild->mRight;
+
+		// 현재 노드의 부모노드를 얻어옴
+		Node* Parent = CurrentNode->mParent;
+
+		//부모 노드가 있을 경우
+		if (Parent)
+		{
+			// 현재 노드가 부모노드의 왼쪽인지 오른쪽인지 판단
+			if (Parent->mLeft == CurrentNode)
+			{
+				Parent->mLeft = LChild;
+			}
+			else
+			{
+				Parent->mRight = LChild;
+			}
+
+			LChild->mParent = Parent;			
+		}
+		// 부모 노드가 없을 경우
+		else
+		{
+			mRoot = LChild;
+			LChild->mParent = nullptr;
+		}
+
+		// CurrentNode와 LeftChild Swap
+		LChild->mRight = CurrentNode;
+		CurrentNode->mParent = LChild;
+
+		// LRChild를 CurrentNode의 mLeft로 Swap
+		CurrentNode->mLeft = LRChild;
+		if (LRChild)
+		{
+			LRChild->mParent = CurrentNode;
+		}
+
+		return LChild;
+	}
+
+	int GetHeight(Node* CurrentNode) const
+	{
+		if (!CurrentNode)
+		{
+			return -1;
+		}
+
+		// 왼쪽과 오른쪽 자식 노드를 검사하여 높이가 더 큰 높이로 지정
+		int LeftHeight = GetHeight(CurrentNode->mLeft);
+		int RightHeight = GetHeight(CurrentNode->mRight);
+
+		return std::max(LeftHeight, RightHeight) + 1;
+		//return LeftHeight < RightHeight ? RightHeight + 1 : LeftHeight + 1;
+	}
+
+	int BalanceFactor(Node* CurrentNode) const
+	{
+		if (!CurrentNode)
+		{
+			return 0;
+		}
+
+		// 왼쪽과 오른쪽의 차이를 구하여 반환
+		return GetHeight(CurrentNode->mLeft) - GetHeight(CurrentNode->mRight);
+	}
+
+	Node* Balance(Node* CurrentNode)
+	{
+		int Factor = BalanceFactor(CurrentNode);
+		
+		// abs : 절대값을 구해줌
+		if (std::abs(Factor) < 2)
+		{
+			return CurrentNode;
+		}
+
+		// 왼쪽 방향으로 균형이 무너졌을 경우 양수가 나오고
+		// 오른쪽 방향으로 균형이 무너졌을 경우 음수가 나옴
+		if (Factor > 0)
+		{
+			if (BalanceFactor(CurrentNode->mLeft) < 0)
+			{
+				RotationLeft(CurrentNode->mLeft);
+			}
+			CurrentNode = RotationRight(CurrentNode);
+
+			//// 왼쪽, 왼쪽으로 균형이 무너졌는지 판단
+			//if (BalanceFactor(CurrentNode->mLeft) > 0)
+			//{
+			//	CurrentNode = RotationRight(CurrentNode);
+			//}
+			//// 왼쪽, 오른쪽으로 균형이 무너진 경우
+			//else
+			//{
+			//	RotationLeft(CurrentNode->mLeft);
+			//	CurrentNode = RotationRight(CurrentNode);
+			//}
+		}
+		else
+		{
+			if (BalanceFactor(CurrentNode->mRight) > 0)
+			{
+				RotationRight(CurrentNode->mRight);
+			}
+			CurrentNode = RotationLeft(CurrentNode);
+		}
+
+		return CurrentNode;
+	}
+
+	void ReBalance(Node* CurrentNode)
+	{
+		while (CurrentNode)
+		{
+			Balance(CurrentNode);
+
+			CurrentNode = CurrentNode->mParent;
+		}
+
+		// 재귀
+		//if (!CurrentNode)
+		//{
+		//	return;
+		//}
+
+		//Balance(CurrentNode);
+
+		//ReBalance(CurrentNode->mParent);
 	}
 };

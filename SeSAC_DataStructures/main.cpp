@@ -4,12 +4,13 @@
 #include "Stack.h"
 #include "Queue.h"
 #include "BinaryTree.h"
-#include <map>
+#include "AVLTree.h"
 
 int main()
 {
 	//**************************************************************************
 	// List
+	std::cout << "===========================" << "List" << "===========================" << std::endl;
 	CLinkedList<int> ListInt;
 
 	for (int i = 0; i < 10; i++)
@@ -51,6 +52,7 @@ int main()
 
 	//**************************************************************************
 	// Array
+	std::cout << "===========================" << "Array" << "===========================" << std::endl;
 	CArray<int> IntArray;
 
 	for (int i = 0; i < 10; i++)
@@ -68,6 +70,7 @@ int main()
 
 	//**************************************************************************
 	// Stack
+	std::cout << "===========================" << "Stack" << "===========================" << std::endl;
 	CStack<int> IntStack;
 
 	for (int i = 0; i < 10; i++)
@@ -89,6 +92,7 @@ int main()
 
 	//**************************************************************************
 	// Queue
+	std::cout << "===========================" << "Queue" << "===========================" << std::endl;
 	CQueue<int> IntQueue;
 
 	for (int i = 0; i < 10; i++)
@@ -111,6 +115,7 @@ int main()
 
 	//**************************************************************************
 	// Binary Tree
+	std::cout << "===========================" << "Binary Tree" << "===========================" << std::endl;
 
 	CBinaryTree<int, int> IntTree;
 
@@ -145,6 +150,32 @@ int main()
 	{
 		std::cout << "Key : " << Treeiter->mKey << ", Value : " << Treeiter->mValue << std::endl;
 	}
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+
+	//**************************************************************************
+	// AVL Tree
+	std::cout << "===========================" << "AVL Tree" << "===========================" << std::endl;
+
+	CAVLTree<int, int> AVLTree;
+
+	for (int i = 0; i < 10; i++)
+	{
+		AVLTree.Insert(i, i);
+	}
+	AVLTree.OutputTree();
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+	AVLTree.erase(1);
+	AVLTree.erase(0);
+	AVLTree.OutputTree();
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+
+
 
 	return 0;
 }
