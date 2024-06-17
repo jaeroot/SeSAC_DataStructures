@@ -5,6 +5,8 @@
 #include "Queue.h"
 #include "BinaryTree.h"
 #include "AVLTree.h"
+#include "Graph.h"
+#include "Sort.h"
 
 int main()
 {
@@ -178,6 +180,48 @@ int main()
 	AVLTree.Preorder();
 	AVLTree.Inorder();
 	AVLTree.Postorder();
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+
+	//**************************************************************************
+	// Graph
+	std::cout << "===========================" << "Graph" << "===========================" << std::endl;
+
+	CGraph<int> IntGraph;
+
+	for (int i = 1; i <= 7; i++)
+	{
+		IntGraph.CreateNode(i);
+	}
+
+	IntGraph.CreateNodeLink(1, 2);
+	IntGraph.CreateNodeLink(1, 3);
+	IntGraph.CreateNodeLink(2, 4);
+	IntGraph.CreateNodeLink(3, 6);
+	IntGraph.CreateNodeLink(4, 5);
+	IntGraph.CreateNodeLink(4, 6);
+	IntGraph.CreateNodeLink(5, 6);
+	IntGraph.CreateNodeLink(5, 7);
+
+	std::cout << "BFS : ";
+	IntGraph.BFS(1);
+	std::cout << std::endl;
+
+	std::cout << "DFS : ";
+	IntGraph.DFS(1);
+	std::cout << std::endl;
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+
+	//**************************************************************************
+	// Quick Sort
+	std::cout << "===========================" << "Quick Sort" << "===========================" << std::endl;
+	int Array[10] = { 0, 3, 2, 5, 88, 132, 42, 56, 78, 100 };
+
+	//CSort<int>::QuickSort(Array, 10, std::greater<int>());
+
 
 
 
