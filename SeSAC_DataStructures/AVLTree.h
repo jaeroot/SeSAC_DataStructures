@@ -527,6 +527,31 @@ public:
 	//	return iter.mNode->mValue;
 	//}
 
+	void Preorder()
+	{
+		std::cout << "preorder : ";
+		Preorder(mRoot);
+
+		std::cout << std::endl;
+	}
+
+	void Inorder()
+	{
+		std::cout << "inorder : ";
+
+		Inorder(mRoot);
+
+		std::cout << std::endl;
+	}
+
+	void Postorder()
+	{
+		std::cout << "postorder : ";
+
+		Postorder(mRoot);
+
+		std::cout << std::endl;
+	}
 
 private:
 	void Insert(const KEY& Key, const VALUE& Value, Node* CurrentNode)
@@ -832,5 +857,41 @@ private:
 		//Balance(CurrentNode);
 
 		//ReBalance(CurrentNode->mParent);
+	}
+
+	void Preorder(Node* CurrentNode)
+	{
+		if (CurrentNode == nullptr)
+		{
+			return;
+		}
+
+		std::cout << CurrentNode->mKey << " ";
+		Preorder(CurrentNode->mLeft);
+		Preorder(CurrentNode->mRight);
+	}
+
+	void Inorder(Node* CurrentNode)
+	{
+		if (CurrentNode == nullptr)
+		{
+			return;
+		}
+
+		Inorder(CurrentNode->mLeft);
+		std::cout << CurrentNode->mKey << " ";
+		Inorder(CurrentNode->mRight);
+	}
+
+	void Postorder(Node* CurrentNode)
+	{
+		if (CurrentNode == nullptr)
+		{
+			return;
+		}
+
+		Postorder(CurrentNode->mLeft);
+		Postorder(CurrentNode->mRight);
+		std::cout << CurrentNode->mKey << " ";
 	}
 };

@@ -175,6 +175,10 @@ int main()
 	std::cout << std::endl;
 
 
+	AVLTree.Preorder();
+	AVLTree.Inorder();
+	AVLTree.Postorder();
+
 
 
 	return 0;
