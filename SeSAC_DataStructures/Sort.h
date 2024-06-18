@@ -141,24 +141,76 @@ public:
 	static void HeapSort(T* Data, int Size, bool (*Func)(const T&, const T&))
 	{
 		mMergeArray = new T[Size];
-		
+
 		for (int i = 0; i < Size; ++i)
 		{
 			mMergeArray[i] = Data[i];
-			HeapInsert((i + 1) / 2, i + 1, Func);
+			HeapInsert((i + 1) / 2 - 1, i, Func);
+		}
+
+		// 힙에서 데이터를 하나씩 빼와서 원본 배열에 넣어줌
+		for (int i = 0; i < Size; ++i)
+		{
+			Data[i] = mMergeArray[0];
+			mMergeArray[0] = mMergeArray[Size - i - 1];
+
+			HeapErase(0, Size - i - 1, Func);
 		}
 
 		delete[] mMergeArray;
 	}
 
 private:
-	static void HeapInsert(int ParentIndex, int Index, bool (*Func)(const T&, const T&))
+	static void HeapInsert(int ParentIndex, int CurrentIndex, bool (*Func)(const T&, const T&))
 	{
+		if (ParentIndex < 0)
+		{
+			return;
+		}
 
+		if (Func(mMergeArray[ParentIndex], mMergeArray[CurrentIndex]))
+		{
+			T Temp = mMergeArray[ParentIndex];
+			mMergeArray[ParentIndex] = mMergeArray[CurrentIndex];
+			mMergeArray[CurrentIndex] = Temp;
+
+			HeapInsert((ParentIndex + 1) / 2 - 1, ParentIndex, Func);
+		}
 	}
 
-};
+	static void HeapErase(int CurrentIndex, int Size, bool (*Func)(const T&, const T&))
+	{
+		int LeftChild = CurrentIndex * 2 + 1;
 
+		if (LeftChild >= Size)
+		{
+			return;
+		}
+		
+		// 최종 비교 인덱스
+		int ChildIndex = LeftChild;
+
+		int RightChild = LeftChild + 1;
+
+		if (RightChild < Size)
+		{
+			// 왼쪽 자식노드의 값과 오른쪽 자식노드의 값을 비교하여 둘 중 비교할 대상을 정함
+			if (Func(mMergeArray[LeftChild], mMergeArray[RightChild]))
+			{
+				ChildIndex = RightChild;
+			}
+		}
+
+		if (Func(mMergeArray[CurrentIndex], mMergeArray[ChildIndex]))
+		{
+			T Temp = mMergeArray[ChildIndex];
+			mMergeArray[ChildIndex] = mMergeArray[CurrentIndex];
+			mMergeArray[CurrentIndex] = mMergeArray[ChildIndex];
+		}
+
+		HeapErase(ChildIndex, Size, Func);
+	}
+};
 
 template <typename T>
 T* CSort<T>::mMergeArray = nullptr;

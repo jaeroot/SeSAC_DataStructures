@@ -7,6 +7,7 @@
 #include "AVLTree.h"
 #include "Graph.h"
 #include "Sort.h"
+#include "Heap.h"
 
 int main()
 {
@@ -218,11 +219,28 @@ int main()
 	//**************************************************************************
 	// Quick Sort
 	std::cout << "===========================" << "Quick Sort" << "===========================" << std::endl;
-	int Array[10] = { 0, 3, 2, 5, 88, 132, 42, 56, 78, 100 };
+	int QuickArray[10] = { 0, 3, 2, 5, 88, 132, 42, 56, 78, 100 };
 
 	//CSort<int>::QuickSort(Array, 10, std::greater<int>());
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+	//**************************************************************************
+	// Heap Sort
+	std::cout << "===========================" << "Heap Sort" << "===========================" << std::endl;
+	int HeapArray[10] = { 0, 3, 2, 5, 88, 132, 42, 56, 78, 100 };
+
+	//CSort<int>::HeapSort(HeapArray, 10, std::greater<int>());
+	std::cout << std::endl;
+	std::cout << std::endl;
 
 
+	//**************************************************************************
+	// Heap
+	std::cout << "===========================" << "Heap" << "===========================" << std::endl;
+
+	std::cout << std::endl;
+	std::cout << std::endl;
 
 
 	return 0;
